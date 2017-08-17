@@ -1,0 +1,23 @@
+{
+  "name": "mofron-comp-appheader",
+  "version": "0.0.1",
+  "description": "app header component for mofron",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simpart/mofron-comp-appheader.git"
+  },
+  "keywords": [
+    "front",
+    "end"
+  ],
+  "author": "simparts",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/simpart/mofron-comp-appheader/issues"
+  },
+  "homepage": "https://github.com/simpart/mofron-comp-appheader#readme"
+}
