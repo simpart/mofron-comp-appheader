@@ -1,23 +1,25 @@
 {
   "name": "mofron-comp-appheader",
-  "version": "0.0.1",
+  "version": "010.0",
   "description": "app header component for mofron",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "dependencies": {
+    "mofron-comp-ttlhdr" : ""
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/simpart/mofron-comp-appheader.git"
+    "url": "git+https://github.com/simpart/mofron-comp-apphdr.git"
   },
   "keywords": [
-    "front",
-    "end"
+    "front-end",
   ],
   "author": "simparts",
   "license": "SEE LICENSE IN LICENSE",
   "bugs": {
-    "url": "https://github.com/simpart/mofron-comp-appheader/issues"
+    "url": "https://github.com/simpart/mofron-comp-apphdr/issues"
   },
-  "homepage": "https://github.com/simpart/mofron-comp-appheader#readme"
+  "homepage": "https://github.com/simpart/mofron-comp-apphdr#readme"
 }
