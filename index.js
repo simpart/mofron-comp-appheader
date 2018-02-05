@@ -79,7 +79,8 @@ mf.comp.Apphdr = class extends Header {
             val.style({
                 'display'      : 'flex'    ,
                 'align-items'  : 'center'  ,
-                'width'        : '100%'
+                'margin-right' : '20px'    ,
+                'margin-left'  : 'auto'
             });
             this.m_idxbs = val;
         } catch (e) {

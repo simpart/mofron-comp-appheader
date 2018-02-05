@@ -1,6 +1,6 @@
 {
   "name": "mofron-comp-apphdr",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "app header component for mofron",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "url": "git+https://github.com/simpart/mofron-comp-apphdr.git"
   },
   "keywords": [
-    "front-end",
+    "front-end"
   ],
   "author": "simparts",
   "license": "SEE LICENSE IN LICENSE",
