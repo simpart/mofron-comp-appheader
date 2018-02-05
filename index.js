@@ -21,12 +21,9 @@ mf.comp.Apphdr = class extends Header {
     initDomConts(prm) {
         try {
             super.initDomConts(prm);
-            this.titleBase().style({
-                'position' : 'fixed'
-            });
             
             /* set index area */
-            this.addChild(this.indexBase());
+            this.addChild(this.indexBase(), undefined, false);
             
         } catch (e) {
             console.error(e.stack);
@@ -34,25 +31,32 @@ mf.comp.Apphdr = class extends Header {
         }
     }
     
-    image (img) {
+    addChild (val, idx, flg) {
         try {
-            let ttl = this.title();
+            if (false === flg) {
+                super.addChild(val, idx);
+            } else {
+                super.addChild(val, this.child().length-1);
+            }
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+    
+    logo (img) {
+        try {
+            let chd = this.child();
             if (undefined === img) {
                 /* getter */
-                return ( (0 !== ttl.length) ||
-                         (true === mf.func.isInclude(ttl[0], 'Image')) ) ? ttl[0] : null;
+                return ( (0 !== chd.length) ||
+                         (true === mf.func.isInclude(chd[0], 'Image')) ) ? chd[0] : null;
             }
             /* setter */
             if (true !== mf.func.isInclude(img, 'Image')) {
                 throw new Error('invalid parameter');
             }
-            this.title(img);
-            if (0 !== ttl.length) {
-                for (let tidx in ttl) {
-                    ttl[tidx].destroy();
-                }
-                this.addTitle(ttl);
-            }
+            this.title(img, 0);
         } catch (e) {
             console.error(e.stack);
             throw e;
