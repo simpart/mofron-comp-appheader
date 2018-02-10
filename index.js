@@ -6,10 +6,19 @@ let mf     = require('mofron');
 let Header = require('mofron-comp-ttlhdr');
 
 mf.comp.Apphdr = class extends Header {
+    constructor (po) {
+        try {
+            super();
+            this.name('Apphdr');
+            this.prmOpt(po);
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
     
     initDomConts(prm) {
         try {
-            this.name('Apphdr');
             super.initDomConts(prm);
             
             /* set index area */
