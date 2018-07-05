@@ -3,6 +3,7 @@
  * @author simpart
  */
 let mf     = require('mofron');
+let Image  = require('mofron-comp-image');
 let Header = require('mofron-comp-ttlhdr');
 
 mf.comp.Apphdr = class extends Header {
@@ -52,7 +53,9 @@ mf.comp.Apphdr = class extends Header {
                          (true === mf.func.isInclude(chd[0], 'Image')) ) ? chd[0] : null;
             }
             /* setter */
-            if (true !== mf.func.isInclude(img, 'Image')) {
+            if ('string' === typeof img) {
+                img = new Image(img);
+            } else {
                 throw new Error('invalid parameter');
             }
             this.title(img, 0);
