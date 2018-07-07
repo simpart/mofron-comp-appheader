@@ -1,25 +1,26 @@
 {
-  "name": "mofron-comp-apphdr",
-  "version": "0.2.2",
+  "name": "mofron-comp-appheader",
+  "version": "0.2.3",
   "description": "app header component for mofron",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "mofron-comp-ttlhdr" : ""
+    "mofron-comp-txtheader" : "",
+    "mofron-event-click" : ""
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/simpart/mofron-comp-apphdr.git"
+    "url": "git+https://github.com/simpart/mofron-comp-appheader.git"
   },
   "keywords": [
     "front-end"
   ],
   "author": "simparts",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/simpart/mofron-comp-apphdr/issues"
+    "url": "https://github.com/simpart/mofron-comp-appheader/issues"
   },
-  "homepage": "https://github.com/simpart/mofron-comp-apphdr#readme"
+  "homepage": "https://github.com/simpart/mofron-comp-appheader#readme"
 }

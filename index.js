@@ -4,122 +4,217 @@
  */
 let mf     = require('mofron');
 let Image  = require('mofron-comp-image');
-let Header = require('mofron-comp-ttlhdr');
+let Header = require('mofron-comp-txtheader');
+let Text   = require('mofron-comp-text');
+let Click  = require('mofron-event-click');
 
-mf.comp.Apphdr = class extends Header {
-    constructor (po) {
+mf.comp.AppHeader = class extends Header {
+    constructor (po, ttl, nav) {
         try {
             super();
-            this.name('Apphdr');
-            this.prmOpt(po);
+            this.name('AppHeader');
+            this.prmOpt(po, ttl, nav);
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
-    initDomConts(prm) {
+    initDomConts(lg, tl, nv) {
         try {
-            super.initDomConts(prm);
-            
-            /* set index area */
-            this.addChild(this.indexBase(), undefined, false);
-            
-        } catch (e) {
-            console.error(e.stack);
-            throw e;
-        }
-    }
-    
-    addChild (val, idx, flg) {
-        try {
-            if (false === flg) {
-                super.addChild(val, idx);
-            } else {
-                super.addChild(val, this.child().length-1);
+            super.initDomConts();
+            /* set area */
+            for (let idx = 0; idx < 3 ; idx++) {
+                this.target().addChild(this.getApphdrTgt(idx));
             }
+            /* update target to contents area */
+            this.target(this.getApphdrTgt(1));
+            
+            this.logo(lg);
+            this.title(tl);
+            this.navigate(nv);
+            
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
-    logo (img) {
+    getApphdrTgt (idx) {
         try {
-            let chd = this.child();
+            if ('number' !== typeof idx) {
+                throw new Error('invalid parameter');
+            }
+            if ((0 > idx) || (2 < idx)) {
+                throw new Error('invalid parameter');
+            }
+            if (undefined === this.m_apphdrtgt) {
+                this.m_apphdrtgt = [
+                    new mf.Dom({
+                        tag       : 'div',
+                        component : this,
+                        style     : { 'display' : 'flex' }
+                    }),
+                    new mf.Dom({
+                        tag       : 'div',
+                        component : this,
+                        style     : { 'display' : 'flex' }
+                    }),
+                    new mf.Dom({
+                        tag       : 'div',
+                        component : this,
+                        style     : { 
+                            'display'      : 'flex',
+                            'margin-right' : '0px' ,
+                            'margin-left'  : 'auto'
+                        }
+                    })
+                ];
+            }
+            
+            
+            return this.m_apphdrtgt[idx];
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+    
+    logo (img, lof) {
+        try {
             if (undefined === img) {
                 /* getter */
-                return ( (0 !== chd.length) ||
-                         (true === mf.func.isInclude(chd[0], 'Image')) ) ? chd[0] : null;
+                return (undefined === this.m_logo) ? null : this.m_logo;
             }
             /* setter */
             if ('string' === typeof img) {
                 img = new Image(img);
-            } else {
+            } else if (true !== mf.func.isInclude(img, 'Image')) {
                 throw new Error('invalid parameter');
             }
-            this.title(img, 0);
+            this.setTitleConf(img, lof, true);
+            this.m_logo = img;
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
-    indexBase (val) {
+    title (prm, lof) {
         try {
-            if (undefined === val) {
+            if (undefined === prm) {
                 /* getter */
-                if (undefined === this.m_idxbs) {
-                    this.indexBase(new mf.Component());
-                }
-                return this.m_idxbs;
+                return this.text();
             }
             /* setter */
-            if (true !== mf.func.isInclude(val, 'Component')) {
-                throw new Error('invalid parameter');
+            if (undefined === lof) {
+                lof = 10;
             }
-            val.style({
-                'display'      : 'flex'    ,
-                'align-items'  : 'center'  ,
-                'margin-right' : '20px'    ,
-                'margin-left'  : 'auto'
-            });
-            this.m_idxbs = val;
+            this.setTitleConf(prm, lof);
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
-    indexConts (val) {
+    setTitleConf (prm, lof, lfg) {
         try {
-            let idxbs = this.indexBase();
-            if (undefined === val) {
-                /* getter */
-                return idxcnt.child();
+            if (undefined === lof) {
+                lof = 10;
             }
-            /* setter */
-            if (true !== mf.func.isInclude(val, 'Component')) {
-                throw new Error('invalid parameter');
-            }
-            val.style({
-                'margin-right' : '20px',
-                'margin-left'  : 'auto'
-            });
-            if (0 === idxbs.child().length) {
-                idxbs.addChild(val);
-            } else {
-                idxbs.updChild(idxbs.child()[0], val);
-            }
+            /* change target */
+            let tgt_buf = this.target();
+            this.target(this.getApphdrTgt(0));
             
-            this.url(
-                (null === this.url()) ? './' : undefined
-            );
+            /* add component */
+            let set_txt = null;
+            if (true === lfg) {
+                this.execAutoResize(prm);
+                this.addChild(prm, 0);
+                set_txt = prm;
+            } else {
+                this.text(prm);
+                set_txt = this.text()[this.text().length-1];
+            }
+            this.target(tgt_buf);
+            set_txt.style({
+                'margin-left' : lof + 'px'
+            });
+            
+            /* set click event */
+            let jump = (txt, hdr) => {
+                try {
+                    location.href = hdr.url();
+                } catch (e) {
+                    console.error(e.stack);
+                    throw e;
+                }
+            };
+            set_txt.addEvent(new Click(jump, this));
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+    
+    url (prm) {
+        try {
+            if (undefined === prm) {
+                /* getter */
+                return (undefined === this.m_url) ? './' : this.m_url;
+            }
+            /* setter */
+            if ('string' !== typeof prm) {
+                throw new Error('invalid parameter');
+            }
+            this.m_url = prm;;
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+    
+    navigate (prm, rof) {
+        try {
+            if (undefined === prm) {
+                /* getter */
+                return (undefined === this.m_navi) ? null : this.m_navi;
+            }
+            /* setter */
+            if (true !== mf.func.isInclude(prm, 'Component')) {
+                throw new Error('invalid parameter');
+            }
+            if (undefined === rof) {
+                rof = 20;
+            }
+            let tgt_buf = this.target();
+            this.target(this.getApphdrTgt(2));
+            this.addChild(prm);
+            this.target(tgt_buf);
+            
+            prm.style({
+                'margin-right' : rof + 'px'
+            });
+            
+            this.m_navi = prm;
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+    
+    execAutoResize(prm) {
+        try {
+            let ret = super.execAutoResize(prm);
+            if ((undefined === prm) && (null !== this.logo())) {
+                 super.execAutoResize(this.logo());
+            }
+            return ret;
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
 }
-module.exports = mf.comp.Apphdr;
+module.exports = mf.comp.AppHeader;
 /* end of file */
