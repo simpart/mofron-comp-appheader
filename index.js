@@ -13,6 +13,7 @@ mf.comp.AppHeader = class extends Header {
         try {
             super();
             this.name('AppHeader');
+            this.prmMap('logo', 'title', 'navigate');
             this.prmOpt(po, ttl, nav);
         } catch (e) {
             console.error(e.stack);
@@ -20,7 +21,7 @@ mf.comp.AppHeader = class extends Header {
         }
     }
     
-    initDomConts(lg, tl, nv) {
+    initDomConts() {
         try {
             super.initDomConts();
             /* set area */
@@ -29,11 +30,6 @@ mf.comp.AppHeader = class extends Header {
             }
             /* update target to contents area */
             this.target(this.getApphdrTgt(1));
-            
-            this.logo(lg);
-            this.title(tl);
-            this.navigate(nv);
-            
         } catch (e) {
             console.error(e.stack);
             throw e;
