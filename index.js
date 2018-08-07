@@ -146,7 +146,9 @@ mf.comp.AppHeader = class extends Header {
                     throw e;
                 }
             };
-            set_txt.addEvent(new Click(jump, this));
+            set_txt.execOption({
+                event : [new Click(jump, this)]
+            });
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -181,15 +183,17 @@ mf.comp.AppHeader = class extends Header {
                 throw new Error('invalid parameter');
             }
             if (undefined === rof) {
-                rof = 20;
+                rof = 0.2;
             }
             let tgt_buf = this.target();
             this.target(this.getApphdrTgt(2));
             this.addChild(prm);
             this.target(tgt_buf);
             
-            prm.style({
-                'margin-right' : rof + 'px'
+            prm.execOption({
+                style : {
+                    'margin-right' : rof + this.sizeType()
+                }
             });
             
             this.m_navi = prm;
