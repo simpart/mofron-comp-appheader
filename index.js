@@ -1,12 +1,13 @@
 /**
- * @file   mofron-comp-apphdr/index.js
- * @author simpart
+ *  @file  mofron-comp-appheader/index.js
+ *  @brief app header component for mofron
+ *  @author simpart
  */
-let mf     = require('mofron');
-let Image  = require('mofron-comp-image');
-let Header = require('mofron-comp-txtheader');
-let Text   = require('mofron-comp-text');
-let Click  = require('mofron-event-click');
+const mf     = require('mofron');
+const Image  = require('mofron-comp-image');
+const Header = require('mofron-comp-txtheader');
+const Text   = require('mofron-comp-text');
+const Click  = require('mofron-event-click');
 
 mf.comp.AppHeader = class extends Header {
     constructor (po, ttl, nav) {
@@ -46,16 +47,19 @@ mf.comp.AppHeader = class extends Header {
             }
             if (undefined === this.m_apphdrtgt) {
                 this.m_apphdrtgt = [
+                    /* title area */
                     new mf.Dom({
                         tag       : 'div',
                         component : this,
                         style     : { 'display' : 'flex' }
                     }),
+                    /* center area */
                     new mf.Dom({
                         tag       : 'div',
                         component : this,
                         style     : { 'display' : 'flex' }
                     }),
+                    /* navigate area */
                     new mf.Dom({
                         tag       : 'div',
                         component : this,
@@ -67,7 +71,6 @@ mf.comp.AppHeader = class extends Header {
                     })
                 ];
             }
-            
             
             return this.m_apphdrtgt[idx];
         } catch (e) {
@@ -88,67 +91,41 @@ mf.comp.AppHeader = class extends Header {
             } else if (true !== mf.func.isInclude(img, 'Image')) {
                 throw new Error('invalid parameter');
             }
-            this.setTitleConf(img, lof, true);
-            this.m_logo = img;
+            
+            this.switchTgt(
+                this.getApphdrTgt(0),
+                (swh_prm) => {
+                    try {
+                        if (null === swh_prm[1]) {
+                            swh_prm[0].addChild(img, 0);
+                        } else {
+                            swh_prm[0].updChild(swh_prm[1], img);
+                        }
+                    } catch (e) {
+                        console.error(e.stack);
+                        throw e;
+                    }
+                },
+                [this,this.logo()]
+             );
+             this.execAutoResize(img);
+             this.setUrlJump(img);
+             this.m_logo = img;
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
-    title (prm, lof) {
+    title (prm) {
         try {
-            if (undefined === prm) {
-                /* getter */
-                return this.text();
+            let ret = this.text(prm);
+            if ((undefined === ret) && (null !== this.url())) {
+                /* setter */
+                let txt = this.text();
+                this.setUrlJump(txt[txt.length-1]);
             }
-            /* setter */
-            if (undefined === lof) {
-                lof = 10;
-            }
-            this.setTitleConf(prm, lof);
-        } catch (e) {
-            console.error(e.stack);
-            throw e;
-        }
-    }
-    
-    setTitleConf (prm, lof, lfg) {
-        try {
-            if (undefined === lof) {
-                lof = 10;
-            }
-            /* change target */
-            let tgt_buf = this.target();
-            this.target(this.getApphdrTgt(0));
-            
-            /* add component */
-            let set_txt = null;
-            if (true === lfg) {
-                this.execAutoResize(prm);
-                this.addChild(prm, 0);
-                set_txt = prm;
-            } else {
-                this.text(prm);
-                set_txt = this.text()[this.text().length-1];
-            }
-            this.target(tgt_buf);
-            set_txt.style({
-                'margin-left' : lof + 'px'
-            });
-            
-            /* set click event */
-            let jump = (txt, hdr) => {
-                try {
-                    location.href = hdr.url();
-                } catch (e) {
-                    console.error(e.stack);
-                    throw e;
-                }
-            };
-            set_txt.execOption({
-                event : [new Click(jump, this)]
-            });
+            return ret;
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -162,10 +139,47 @@ mf.comp.AppHeader = class extends Header {
                 return (undefined === this.m_url) ? './' : this.m_url;
             }
             /* setter */
+            if (null === prm) {
+                this.m_url = prm;
+                return;
+            }
             if ('string' !== typeof prm) {
                 throw new Error('invalid parameter');
             }
-            this.m_url = prm;;
+            this.m_url = prm;
+            let ttl    = this.title();
+            for (let tidx in ttl) {
+                this.setUrlJump(ttl[tidx]);
+            }
+        } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+    
+    setUrlJump (prm) {
+        try {
+            if (true !== mf.func.isInclude(prm, 'Component')) {
+                throw new Error('invalid parameter');
+            }
+            let url = this.url();
+            if (null === url) {
+                throw new Error('could not find url');
+            }
+            prm.execOption({
+                event : [
+                    new Click(
+                        () => {
+                            try {
+                                location.href = url;
+                            } catch (e) {
+                                console.error(e.stack);
+                                throw e;
+                            }
+                        }
+                    )
+                ]
+            });
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -185,17 +199,24 @@ mf.comp.AppHeader = class extends Header {
             if (undefined === rof) {
                 rof = 0.2;
             }
-            let tgt_buf = this.target();
-            this.target(this.getApphdrTgt(2));
-            this.addChild(prm);
-            this.target(tgt_buf);
             
-            prm.execOption({
-                style : {
-                    'margin-right' : rof + this.sizeType()
-                }
-            });
-            
+            mf.func.compSize(prm, 'margin-right', rof);
+            this.switchTgt(
+                this.getApphdrTgt(2),
+                (swh_prm) => {
+                    try {
+                        if (null === swh_prm.navigate()) {
+                            swh_prm.addChild(prm);
+                        } else {
+                            swh_prm.updChild(swh_prm.navigate(), prm);
+                        }
+                    } catch (e) {
+                        console.error(e.stack);
+                        throw e;
+                    }
+                },
+                this
+            );
             this.m_navi = prm;
         } catch (e) {
             console.error(e.stack);
@@ -203,13 +224,12 @@ mf.comp.AppHeader = class extends Header {
         }
     }
     
-    execAutoResize(prm) {
+    execAutoResize (prm) {
         try {
-            let ret = super.execAutoResize(prm);
+            super.execAutoResize(prm);
             if ((undefined === prm) && (null !== this.logo())) {
-                 super.execAutoResize(this.logo());
+                super.execAutoResize(this.logo());
             }
-            return ret;
         } catch (e) {
             console.error(e.stack);
             throw e;
