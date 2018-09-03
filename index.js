@@ -197,10 +197,7 @@ mf.comp.AppHeader = class extends Header {
                 throw new Error('invalid parameter');
             }
             prm.execOption({
-                sizeValue : new mf.Param(
-                    'margin-right',
-                    (undefined === rof) ? '0.2rem' : rof
-                )
+                style : { 'margin-right' : (undefined === rof) ? '0.2rem' : rof }
             });
             
             this.switchTgt(
