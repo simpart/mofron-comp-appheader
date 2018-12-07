@@ -8,13 +8,17 @@ const Image  = require('mofron-comp-image');
 const Header = require('mofron-comp-txtheader');
 const Text   = require('mofron-comp-text');
 const Click  = require('mofron-event-click');
+const Synhei = require('mofron-effect-synchei');
+const Hrzpos = require('mofron-effect-hrzpos');
+const Horiz  = require('mofron-layout-horizon');
+
 
 mf.comp.AppHeader = class extends Header {
     constructor (po, ttl, nav) {
         try {
             super();
             this.name('AppHeader');
-            this.prmMap('logo', 'title', 'navigate');
+            this.prmMap(['logo', 'title', 'navi']);
             this.prmOpt(po, ttl, nav);
         } catch (e) {
             console.error(e.stack);
@@ -22,108 +26,98 @@ mf.comp.AppHeader = class extends Header {
         }
     }
     
+    /**
+     * init dom contents
+     * 
+     * @note private method
+     */
     initDomConts() {
         try {
             super.initDomConts();
-            /* set area */
-            for (let idx = 0; idx < 3 ; idx++) {
-                this.target().addChild(this.getApphdrTgt(idx));
-            }
-            /* update target to contents area */
-            this.target(this.getApphdrTgt(1));
+            this.addChild(this.logo(), 0);
+            
+            let conts = new mf.Component({
+                layout : new Horiz()
+            });
+            this.addChild(conts);
+            this.addChild(this.naviWrap());
+            
+            this.target(conts.target());
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
-    getApphdrTgt (idx) {
+    /**
+     * setter/getter logo image
+     * insert logo image to left side of title
+     *
+     * @param p1 (string)         path to image
+     * @param p1 (mf.comp.Image)  image object
+     * @param p1 (undefined) call as getter
+     * @return   (mf.comp.Image)  logo image
+     */
+    logo (prm, off) {
         try {
-            if ('number' !== typeof idx) {
-                throw new Error('invalid parameter');
+            if ('string' === typeof prm) {
+                this.logo().execOption({
+                    path : prm
+                });
+                this.logo().effect('SyncHei').offset(off);
+                return;
+            } else if (true === mf.func.isInclude(prm, 'Image')) {
+                prm.execOption({
+                    event  : this.getUrlJump(),
+                    effect : new Synhei(this, off),
+                    style  : [{ 'margin-left' : '0.2rem' }, true]
+                });
             }
-            if ((0 > idx) || (2 < idx)) {
-                throw new Error('invalid parameter');
-            }
-            if (undefined === this.m_apphdrtgt) {
-                this.m_apphdrtgt = [
-                    /* title area */
-                    new mf.Dom({
-                        tag       : 'div',
-                        component : this,
-                        style     : { 'display' : 'flex' }
-                    }),
-                    /* center area */
-                    new mf.Dom({
-                        tag       : 'div',
-                        component : this,
-                        style     : { 'display' : 'flex' }
-                    }),
-                    /* navigate area */
-                    new mf.Dom({
-                        tag       : 'div',
-                        component : this,
-                        style     : { 
-                            'display'      : 'flex',
-                            'margin-right' : '0px' ,
-                            'margin-left'  : 'auto'
-                        }
-                    })
-                ];
-            }
-            
-            return this.m_apphdrtgt[idx];
+            return this.innerComp('logo', prm, Image);
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
-    logo (img, lof) {
+    /**
+     * get click function
+     *
+     * @note private method
+     */
+    getUrlJump () {
         try {
-            if (undefined === img) {
-                /* getter */
-                return (undefined === this.m_logo) ? null : this.m_logo;
-            }
-            /* setter */
-            if ('string' === typeof img) {
-                img = new Image(img);
-            } else if (true !== mf.func.isInclude(img, 'Image')) {
-                throw new Error('invalid parameter');
-            }
-            
-            this.switchTgt(
-                this.getApphdrTgt(0),
-                (swh_prm) => {
-                    try {
-                        if (null === swh_prm[1]) {
-                            swh_prm[0].addChild(img, 0);
-                        } else {
-                            swh_prm[0].updChild(swh_prm[1], img);
-                        }
-                    } catch (e) {
-                        console.error(e.stack);
-                        throw e;
+            let func = (p1, p2) => {
+                try {
+                    if (null !== p2.url()) {
+                        location.href = p2.url();
                     }
-                },
-                [this,this.logo()]
-             );
-             this.execAutoResize(img);
-             this.setUrlJump(img);
-             this.m_logo = img;
+                } catch (e) {
+                    console.error(e.stack);
+                    throw e;
+                }
+            };
+            return new Click([func, this]);
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
-    title (prm) {
+    /**
+     * setter/getter header title
+     *
+     * @param p1 (string)       header title
+     * @param p1 (mf.comp.Text) text object for mofron
+     * @param p1 (undefined)    call as getter
+     * @return   (string)       header title
+     */
+    title (txt) {
         try {
-            let ret = this.text(prm);
-            if ((undefined === ret) && (null !== this.url())) {
-                /* setter */
-                let txt = this.text();
-                this.setUrlJump(txt[txt.length-1]);
+            let ret = this.text(txt);
+            if ( (true === mf.func.isInclude(ret, 'Text')) &&
+                 (null === ret.event('Click')) ) {
+                ret.event([this.getUrlJump()]);
             }
             return ret;
         } catch (e) {
@@ -132,103 +126,57 @@ mf.comp.AppHeader = class extends Header {
         }
     }
     
+    /**
+     * setter/getter url jump target
+     * it jump to this url when user clicks logo or title
+     * set null if you don't want jump
+     * 
+     * @param p1 (string)    url
+     * @param p1 (undefined) call as getter
+     * @return   (string)    url
+     */
     url (prm) {
+        try { return this.member('url', 'string', prm, './'); } catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+    
+    /**
+     * setter/getter navigate area
+     *
+     * @param p1 (Component Object)   navigate component
+     * @param p1 (undefined)          call as getter
+     * @return   ([Component Object]) navigate component
+     */
+    navi (prm) {
         try {
             if (undefined === prm) {
                 /* getter */
-                return (undefined === this.m_url) ? './' : this.m_url;
+                return this.naviWrap().child();
             }
             /* setter */
-            if (null === prm) {
-                this.m_url = prm;
-                return;
-            }
-            if ('string' !== typeof prm) {
-                throw new Error('invalid parameter');
-            }
-            this.m_url = prm;
-            let ttl    = this.title();
-            for (let tidx in ttl) {
-                this.setUrlJump(ttl[tidx]);
-            }
+            this.naviWrap().execOption({ child : prm });
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
     
-    setUrlJump (prm) {
+    /**
+     * setter/getter navigate wrap
+     *
+     * @note private method
+     */
+    naviWrap (prm) {
         try {
-            if (true !== mf.func.isInclude(prm, 'Component')) {
-                throw new Error('invalid parameter');
+            if (true === mf.func.isInclude(prm, 'Component')) {
+                prm.execOption({
+                    layout : new Horiz(),
+                    effect : new Hrzpos('right', '0.2rem')
+                });
             }
-            let url = this.url();
-            if (null === url) {
-                throw new Error('could not find url');
-            }
-            prm.execOption({
-                event : [
-                    new Click(
-                        () => {
-                            try {
-                                location.href = url;
-                            } catch (e) {
-                                console.error(e.stack);
-                                throw e;
-                            }
-                        }
-                    )
-                ]
-            });
-        } catch (e) {
-            console.error(e.stack);
-            throw e;
-        }
-    }
-    
-    navigate (prm, rof) {
-        try {
-            if (undefined === prm) {
-                /* getter */
-                return (undefined === this.m_navi) ? null : this.m_navi;
-            }
-            /* setter */
-            if (true !== mf.func.isInclude(prm, 'Component')) {
-                throw new Error('invalid parameter');
-            }
-            prm.execOption({
-                style : { 'margin-right' : (undefined === rof) ? '0.2rem' : rof }
-            });
-            
-            this.switchTgt(
-                this.getApphdrTgt(2),
-                (swh_prm) => {
-                    try {
-                        if (null === swh_prm.navigate()) {
-                            swh_prm.addChild(prm);
-                        } else {
-                            swh_prm.updChild(swh_prm.navigate(), prm);
-                        }
-                    } catch (e) {
-                        console.error(e.stack);
-                        throw e;
-                    }
-                },
-                this
-            );
-            this.m_navi = prm;
-        } catch (e) {
-            console.error(e.stack);
-            throw e;
-        }
-    }
-    
-    execAutoResize (prm) {
-        try {
-            super.execAutoResize(prm);
-            if ((undefined === prm) && (null !== this.logo())) {
-                super.execAutoResize(this.logo());
-            }
+            return this.innerComp('naviWrap', prm, mf.Component);
         } catch (e) {
             console.error(e.stack);
             throw e;
