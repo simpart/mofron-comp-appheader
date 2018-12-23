@@ -87,10 +87,10 @@ mf.comp.AppHeader = class extends Header {
      */
     getUrlJump () {
         try {
-            let func = (p1, p2) => {
+            let func = (p1, p2, p3) => {
                 try {
-                    if (null !== p2.url()) {
-                        location.href = p2.url();
+                    if (null !== p3.url()) {
+                        location.href = p3.url();
                     }
                 } catch (e) {
                     console.error(e.stack);
