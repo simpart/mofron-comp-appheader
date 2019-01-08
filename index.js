@@ -112,9 +112,9 @@ mf.comp.AppHeader = class extends Header {
      * @param p1 (undefined)    call as getter
      * @return   (string)       header title
      */
-    title (txt) {
+    title (txt, p2) {
         try {
-            let ret = this.text(txt);
+            let ret = this.text(txt, p2);
             if ( (true === mf.func.isInclude(ret, 'Text')) &&
                  (null === ret.event('Click')) ) {
                 ret.event([this.getUrlJump()]);
