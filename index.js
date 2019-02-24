@@ -36,9 +36,7 @@ mf.comp.AppHeader = class extends Header {
             super.initDomConts();
             this.addChild(this.logo(), 0);
             
-            let conts = new mf.Component({
-                layout : new Horiz()
-            });
+            let conts = new mf.Component({ layout: new Horiz() });
             this.addChild(conts);
             this.addChild(this.naviWrap());
             
@@ -61,16 +59,23 @@ mf.comp.AppHeader = class extends Header {
     logo (prm, off) {
         try {
             if ('string' === typeof prm) {
-                this.logo().execOption({
-                    path : prm
-                });
-                this.logo().effect('SyncHei').offset(off);
+                this.logo().option({ path : prm });
+                this.logo().effect(['SyncHei', 'logo']).offset(off);
                 return;
             } else if (true === mf.func.isInclude(prm, 'Image')) {
+                let jmp = (p1, p2, p3) => {
+                    try { p3.jump(); } catch (e) {
+                        console.error(e.stack);
+                        throw e;
+                    }
+                }
                 prm.execOption({
-                    event  : this.getUrlJump(),
-                    effect : new Synhei(this, off),
-                    style  : [{ 'margin-left' : '0.2rem' }, true]
+                    event  : [ new Click([jmp, this]) ],
+                    effect : [ new Synhei({ targetComp: this, offset: off, tag: 'logo' }) ],
+                    style  : [
+                        { 'margin-left' : (undefined !== off) ? off : '0.2rem' },
+                        (undefined !== off) ? false : true
+                    ]
                 });
             }
             return this.innerComp('logo', prm, Image);
@@ -80,24 +85,11 @@ mf.comp.AppHeader = class extends Header {
         }
     }
     
-    /**
-     * get click function
-     *
-     * @note private method
-     */
-    getUrlJump () {
+    jump () {
         try {
-            let func = (p1, p2, p3) => {
-                try {
-                    if (null !== p3.url()) {
-                        location.href = p3.url();
-                    }
-                } catch (e) {
-                    console.error(e.stack);
-                    throw e;
-                }
-            };
-            return new Click([func, this]);
+            if (null !== this.url()) {
+                location.href = this.url();
+            }
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -112,11 +104,17 @@ mf.comp.AppHeader = class extends Header {
      * @param p1 (undefined)    call as getter
      * @return   (string)       header title
      */
-    title (txt, p2) {
+    title (txt) {
         try {
-            let ret = this.text(txt, p2);
-            if (undefined !== txt) {
-                this.text().event(this.getUrlJump());
+            let ret = this.text(txt);
+            if (undefined === ret) {
+                let jmp = (p1, p2, p3) => {
+                    try { p3.jump(); } catch (e) {
+                        console.error(e.stack);
+                        throw e;
+                    }
+                }
+                this.text().event([new Click([jmp, this])]);
             }
             return ret;
         } catch (e) {
@@ -155,7 +153,7 @@ mf.comp.AppHeader = class extends Header {
                 return this.naviWrap().child();
             }
             /* setter */
-            this.naviWrap().execOption({ child : prm });
+            this.naviWrap().option({ child : prm });
         } catch (e) {
             console.error(e.stack);
             throw e;
