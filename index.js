@@ -11,7 +11,7 @@ const Click  = require('mofron-event-click');
 const Synhei = require('mofron-effect-synchei');
 const Hrzpos = require('mofron-effect-hrzpos');
 const Horiz  = require('mofron-layout-horizon');
-
+const Margin = require('mofron-layout-margin');
 
 mf.comp.AppHeader = class extends Header {
     constructor (po, ttl, nav) {
@@ -168,8 +168,8 @@ mf.comp.AppHeader = class extends Header {
     naviWrap (prm) {
         try {
             if (true === mf.func.isInclude(prm, 'Component')) {
-                prm.execOption({
-                    layout : new Horiz(),
+                prm.option({
+                    layout : [new Horiz(),new Margin('right', '0.2rem')],
                     effect : new Hrzpos('right', '0.2rem')
                 });
             }
