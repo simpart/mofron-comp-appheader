@@ -14,6 +14,16 @@ const Horiz  = require('mofron-layout-horizon');
 const Margin = require('mofron-layout-margin');
 
 mf.comp.AppHeader = class extends Header {
+    /**
+     * initialize component
+     * 
+     * @param (mixed) logo parameter
+     *                object: component option
+     * @param (mixed) title parameter
+     * @param (component) navi parameter 
+     * @pmap logo,title,navi
+     * @type private
+     */
     constructor (po, ttl, nav) {
         try {
             super();
@@ -29,7 +39,7 @@ mf.comp.AppHeader = class extends Header {
     /**
      * init dom contents
      * 
-     * @note private method
+     * @type private
      */
     initDomConts() {
         try {
@@ -51,10 +61,10 @@ mf.comp.AppHeader = class extends Header {
      * setter/getter logo image
      * insert logo image to left side of title
      *
-     * @param p1 (string)         path to image
-     * @param p1 (mf.comp.Image)  image object
-     * @param p1 (undefined) call as getter
-     * @return   (mf.comp.Image)  logo image
+     * @param (mixed) string: path to logo image
+     *                mofron-comp-image: logo image component
+     * @param (string (size)) height offset size
+     * @return (mofron-comp-image) logo image
      */
     logo (prm, off) {
         try {
@@ -69,7 +79,7 @@ mf.comp.AppHeader = class extends Header {
                         throw e;
                     }
                 }
-                prm.execOption({
+                prm.option({
                     event  : [ new Click([jmp, this]) ],
                     effect : [ new Synhei({ targetComp: this, offset: off, tag: 'logo' }) ],
                     style  : [
@@ -85,6 +95,11 @@ mf.comp.AppHeader = class extends Header {
         }
     }
     
+    /**
+     * jump to url
+     * 
+     * @type function
+     */
     jump () {
         try {
             if (null !== this.url()) {
@@ -99,10 +114,10 @@ mf.comp.AppHeader = class extends Header {
     /**
      * setter/getter header title
      *
-     * @param p1 (string)       header title
-     * @param p1 (mf.comp.Text) text object for mofron
-     * @param p1 (undefined)    call as getter
-     * @return   (string)       header title
+     * @param (mixed) string: header title
+     *                mofron-comp-text: header title component
+     * @return (mofron-comp-text) text contents
+     * @type parameter
      */
     title (txt) {
         try {
@@ -128,9 +143,9 @@ mf.comp.AppHeader = class extends Header {
      * it jump to this url when user clicks logo or title
      * set null if you don't want jump
      * 
-     * @param p1 (string)    url
-     * @param p1 (undefined) call as getter
-     * @return   (string)    url
+     * @param (string) jump url
+     * @return (string) jump url
+     * @type parameter
      */
     url (prm) {
         try { return this.member('url', 'string', prm, './'); } catch (e) {
@@ -142,9 +157,9 @@ mf.comp.AppHeader = class extends Header {
     /**
      * setter/getter navigate area
      *
-     * @param p1 (Component Object)   navigate component
-     * @param p1 (undefined)          call as getter
-     * @return   ([Component Object]) navigate component
+     * @param (component) navigate component
+     * @return (array) navigate component list
+     * @type parameter
      */
     navi (prm) {
         try {
@@ -162,14 +177,17 @@ mf.comp.AppHeader = class extends Header {
     
     /**
      * setter/getter navigate wrap
-     *
-     * @note private method
+     * 
+     * @param (component) wrap component
+     * @return (component) wrap component
+     * @type private
      */
     naviWrap (prm) {
         try {
             if (true === mf.func.isInclude(prm, 'Component')) {
                 prm.option({
-                    layout : [new Horiz(),new Margin('right', '0.2rem')],
+		    style  : { "position" : "relative" },
+                    layout : new Horiz(),
                     effect : new Hrzpos('right', '0.2rem')
                 });
             }
