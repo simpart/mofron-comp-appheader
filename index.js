@@ -62,15 +62,21 @@ mf.comp.AppHeader = class extends Header {
      * insert logo image to left side of title
      *
      * @param (mixed) string: path to logo image
-     *                mofron-comp-image: logo image component
-     * @param (string (size)) height offset size
+     *                mofron-comp-image: replace image component
+     * @param (mixed) string: height offset size
+     *                associative-array: option for image component
      * @return (mofron-comp-image) logo image
+     * @type parameter
      */
-    logo (prm, off) {
+    logo (prm, opt) {
         try {
             if ('string' === typeof prm) {
                 this.logo().option({ path : prm });
-                this.logo().effect(['SyncHei', 'logo']).offset(off);
+		if ('string' === typeof opt) {
+                    this.logo().effect({ name: 'SyncHei', tag: 'logo' }).offset(off);
+		} else {
+                    this.logo().option(opt);
+		}
                 return;
             } else if (true === mf.func.isInclude(prm, 'Image')) {
                 let jmp = (p1, p2, p3) => {
@@ -80,13 +86,13 @@ mf.comp.AppHeader = class extends Header {
                     }
                 }
                 prm.option({
-                    event  : [ new Click([jmp, this]) ],
-                    effect : [ new Synhei({ targetComp: this, offset: off, tag: 'logo' }) ],
-                    style  : [
-                        { 'margin-left' : (undefined !== off) ? off : '0.2rem' },
-                        (undefined !== off) ? false : true
-                    ]
+                    event  : new Click([jmp, this]),
+                    effect : new Synhei({ targetComp: this, tag: 'logo' }),
+                    style  : { 'margin-left' : '0.2rem' },
                 });
+		if ('string' === typeof opt) {
+		    prm.logo().effect({ name: 'SyncHei', tag: 'logo' }).offset(opt);
+                }
             }
             return this.innerComp('logo', prm, Image);
         } catch (e) {
@@ -115,7 +121,7 @@ mf.comp.AppHeader = class extends Header {
      * setter/getter header title
      *
      * @param (mixed) string: header title
-     *                mofron-comp-text: header title component
+     *                mofron-comp-text: replace title component of header
      * @return (mofron-comp-text) text contents
      * @type parameter
      */

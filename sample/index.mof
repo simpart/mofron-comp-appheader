@@ -1,6 +1,6 @@
 <require>
-    <tag module="mofron-comp-text">Text</tag>
-    <tag module="mofron-comp-appheader">AppHeader</tag>
+    <tag load="mofron-comp-text">Text</tag>
+    <tag load="mofron-comp-appheader">AppHeader</tag>
 </require>
 
 <AppHeader logo="./img/logo.png">
