@@ -3,33 +3,35 @@
  *  @brief app header component for mofron
  *  @author simpart
  */
-const mf     = require('mofron');
 const Image  = require('mofron-comp-image');
 const Header = require('mofron-comp-txtheader');
 const Text   = require('mofron-comp-text');
-const Click  = require('mofron-event-click');
+const Link   = require('mofron-event-link');
 const Synhei = require('mofron-effect-synchei');
 const Hrzpos = require('mofron-effect-hrzpos');
 const Horiz  = require('mofron-layout-horizon');
-const Margin = require('mofron-layout-margin');
+const comutl = mofron.util.common;
 
-mf.comp.AppHeader = class extends Header {
+module.exports = class extends Header {
     /**
      * initialize component
      * 
-     * @param (mixed) logo parameter
-     *                object: component option
+     * @param (mixed) image parameter
+     *                key-value: component option
      * @param (mixed) title parameter
      * @param (component) navi parameter 
-     * @pmap logo,title,navi
+     * @short title,image,navi
      * @type private
      */
-    constructor (po, ttl, nav) {
+    constructor (p1, p2, p3) {
         try {
             super();
             this.name('AppHeader');
-            this.prmMap(['logo', 'title', 'navi']);
-            this.prmOpt(po, ttl, nav);
+            this.shortForm('title', 'image', 'navi');
+            
+	    if (0 < arguments.length) {
+                this.config(p1, p2, p3);
+            }
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -44,73 +46,13 @@ mf.comp.AppHeader = class extends Header {
     initDomConts() {
         try {
             super.initDomConts();
-            this.addChild(this.logo(), 0);
+            this.child(this.image(), 0);
+	    this.image().event(new Link("./"));
+	    this.text().event(new Link("./"));
             
-            let conts = new mf.Component({ layout: new Horiz() });
-            this.addChild(conts);
-            this.addChild(this.naviWrap());
-            
-            this.target(conts.target());
-        } catch (e) {
-            console.error(e.stack);
-            throw e;
-        }
-    }
-    
-    /**
-     * setter/getter logo image
-     * insert logo image to left side of title
-     *
-     * @param (mixed) string: path to logo image
-     *                mofron-comp-image: replace image component
-     * @param (mixed) string: height offset size
-     *                associative-array: option for image component
-     * @return (mofron-comp-image) logo image
-     * @type parameter
-     */
-    logo (prm, opt) {
-        try {
-            if ('string' === typeof prm) {
-                this.logo().option({ path : prm });
-		if ('string' === typeof opt) {
-                    this.logo().effect({ name: 'SyncHei', tag: 'logo' }).offset(off);
-		} else {
-                    this.logo().option(opt);
-		}
-                return;
-            } else if (true === mf.func.isInclude(prm, 'Image')) {
-                let jmp = (p1, p2, p3) => {
-                    try { p3.jump(); } catch (e) {
-                        console.error(e.stack);
-                        throw e;
-                    }
-                }
-                prm.option({
-                    event  : new Click([jmp, this]),
-                    effect : new Synhei({ targetComp: this, tag: 'logo' }),
-                    style  : { 'margin-left' : '0.2rem' },
-                });
-		if ('string' === typeof opt) {
-		    prm.logo().effect({ name: 'SyncHei', tag: 'logo' }).offset(opt);
-                }
-            }
-            return this.innerComp('logo', prm, Image);
-        } catch (e) {
-            console.error(e.stack);
-            throw e;
-        }
-    }
-    
-    /**
-     * jump to url
-     * 
-     * @type function
-     */
-    jump () {
-        try {
-            if (null !== this.url()) {
-                location.href = this.url();
-            }
+            let conts = new mofron.class.Component({ layout: new Horiz() });
+            this.child([ conts, this.naviWrap() ]);
+            this.childDom(conts.childDom());
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -127,17 +69,7 @@ mf.comp.AppHeader = class extends Header {
      */
     title (txt) {
         try {
-            let ret = this.text(txt);
-            if (undefined === ret) {
-                let jmp = (p1, p2, p3) => {
-                    try { p3.jump(); } catch (e) {
-                        console.error(e.stack);
-                        throw e;
-                    }
-                }
-                this.text().event([new Click([jmp, this])]);
-            }
-            return ret;
+            return this.text(txt);
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -145,16 +77,24 @@ mf.comp.AppHeader = class extends Header {
     }
     
     /**
-     * setter/getter url jump target
-     * it jump to this url when user clicks logo or title
-     * set null if you don't want jump
-     * 
-     * @param (string) jump url
-     * @return (string) jump url
+     * setter/getter logo image
+     * insert logo image to left side of title
+     *
+     * @param (mixed) string: path to logo image
+     *                mofron-comp-image: replace image component
+     * @return (mofron-comp-image) logo image
      * @type parameter
      */
-    url (prm) {
-        try { return this.member('url', 'string', prm, './'); } catch (e) {
+    image (prm) {
+        try {
+            if ('string' === typeof prm) {
+                this.image().config({ path : prm });
+                return;
+            } else if (true === comutl.isinc(prm, 'Image')) {
+                prm.config({ effect : new Synhei(this) });
+            }
+            return this.innerComp('image', prm, Image);
+        } catch (e) {
             console.error(e.stack);
             throw e;
         }
@@ -169,12 +109,7 @@ mf.comp.AppHeader = class extends Header {
      */
     navi (prm) {
         try {
-            if (undefined === prm) {
-                /* getter */
-                return this.naviWrap().child();
-            }
-            /* setter */
-            this.naviWrap().option({ child : prm });
+            return this.naviWrap().child(prm);
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -182,7 +117,57 @@ mf.comp.AppHeader = class extends Header {
     }
     
     /**
-     * setter/getter navigate wrap
+     * logo image position and size offset
+     * 
+     * @param (string (size)) left offset position
+     * @param (string (size)) height offset position
+     * @type parameter
+     */
+    imgpos (lft, hei) {
+        try {
+            this.image().style({ "margin-left" : lft });
+            let syn = this.image().effect({ name: "SyncHei" });
+            if (true === comutl.isinc(syn, "SyncHei") ) {
+                syn.offset(hei);
+            }
+	} catch (e) {
+            console.error(e.stack);
+            throw e;
+	}
+    }
+    
+    /**
+     * setter/getter url jump target
+     * it jump to this url when user clicks logo or title
+     * set null if you don't want jump
+     * 
+     * @param (mixed) string: jump url
+     *                null: not jump
+     * @return (string) jump url
+     * @type parameter
+     */
+    url (prm) {
+        try {
+	    let txt_link = this.text().event({ name: "Link" });
+	    let img_link = this.image().event({ name: "Link" });
+	    if (undefined === prm) {
+                return ("" === txt_link.url()) ? null : txt_link.url();
+	    }
+	    if (null === prm) {
+	        txt_link.config({ url:"", suspend: true });
+		img_link.config({ url:"", suspend: true });
+	    } else {
+                txt_link.url(prm);
+		img_link.url(prm);
+	    }
+	} catch (e) {
+            console.error(e.stack);
+            throw e;
+        }
+    }
+    
+    /**
+     * setter/getter navigate wrapper
      * 
      * @param (component) wrap component
      * @return (component) wrap component
@@ -190,19 +175,17 @@ mf.comp.AppHeader = class extends Header {
      */
     naviWrap (prm) {
         try {
-            if (true === mf.func.isInclude(prm, 'Component')) {
-                prm.option({
-		    style  : { "position" : "relative" },
+            if (true === comutl.isinc(prm, 'Component')) {
+                prm.config({
                     layout : new Horiz(),
-                    effect : new Hrzpos('right', '0.2rem')
+                    effect : new Hrzpos("right", "0.2rem")
                 });
             }
-            return this.innerComp('naviWrap', prm, mf.Component);
+            return this.innerComp('naviWrap', prm, mofron.class.Component);
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
     }
 }
-module.exports = mf.comp.AppHeader;
 /* end of file */

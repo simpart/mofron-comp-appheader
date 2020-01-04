@@ -1,6 +1,6 @@
 {
   "name": "mofron-comp-appheader",
-  "version": "0.4.15",
+  "version": "0.5.1",
   "description": "app header component for mofron",
   "main": "index.js",
   "scripts": {
@@ -10,11 +10,10 @@
     "mofron-comp-image" : "",
     "mofron-comp-txtheader" : "",
     "mofron-comp-text" : "",
-    "mofron-event-click" : "",
+    "mofron-event-link" : "",
     "mofron-effect-synchei" : "",
     "mofron-effect-hrzpos" : "",
-    "mofron-layout-horizon" : "",
-    "mofron-layout-margin" : ""
+    "mofron-layout-horizon" : ""
   },
   "repository": {
     "type": "git",

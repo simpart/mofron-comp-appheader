@@ -23,16 +23,18 @@ npm install mofron  mofron-comp-appheader
     </navi>
 </AppHeader>
 ```
+
 # Parameter
 
-|Simple<br>Param | Parameter Name | Type | Description |
-|:--------------:|:---------------|:-----|:------------|
-| | logo | mixed | string: path to logo image |
-| | | | mofron-comp-image: replace image component |
-| | | mixed | string: height offset size |
-| | | | associative-array: option for image component |
-| | title | mixed | string: header title |
+| Short<br>Form | Parameter Name | Type | Description |
+|:-------------:|:---------------|:-----|:------------|
+| ◯  | title | mixed | string: header title |
 | | | | mofron-comp-text: replace title component of header |
-| | url | string | jump url |
-| | navi | component | navigate component |
+| ◯  | image | mixed | string: path to logo image |
+| | | | mofron-comp-image: replace image component |
+| ◯  | navi | component | navigate component |
+| | imgpos | string (size) | left offset position |
+| | | string (size) | height offset position |
+| | url | mixed | string: jump url |
+| | | | null: not jump |
 
