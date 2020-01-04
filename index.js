@@ -1,7 +1,8 @@
 /**
- *  @file  mofron-comp-appheader/index.js
- *  @brief app header component for mofron
- *  @author simpart
+ * @file  mofron-comp-appheader/index.js
+ * @brief app header component for mofron
+ *        title area has a link function that is specified by url parameter
+ * @license MIT
  */
 const Image  = require('mofron-comp-image');
 const Header = require('mofron-comp-txtheader');
@@ -60,16 +61,17 @@ module.exports = class extends Header {
     }
     
     /**
-     * setter/getter header title
+     * header title
      *
      * @param (mixed) string: header title
      *                mofron-comp-text: replace title component of header
+     * @param (key-value) text config
      * @return (mofron-comp-text) text contents
      * @type parameter
      */
-    title (txt) {
+    title (txt, cnf) {
         try {
-            return this.text(txt);
+            return this.text(txt, cnf);
         } catch (e) {
             console.error(e.stack);
             throw e;
@@ -82,11 +84,16 @@ module.exports = class extends Header {
      *
      * @param (mixed) string: path to logo image
      *                mofron-comp-image: replace image component
+     * @param (key-value) image config
      * @return (mofron-comp-image) logo image
      * @type parameter
      */
-    image (prm) {
+    image (prm, cnf) {
         try {
+	    if (undefined !== cnf) {
+	        let add_cnf = (true === comutl.isinc(prm, 'Image')) ? prm : this.image();
+                add_cnf.config(cnf);
+	    }
             if ('string' === typeof prm) {
                 this.image().config({ path : prm });
                 return;
