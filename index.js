@@ -1,8 +1,7 @@
 /**
- * @file  mofron-comp-appheader/index.js
- * @brief app header component for mofron
- *        title area has a link function that is specified by url parameter
- * @license MIT
+ *  @file  mofron-comp-appheader/index.js
+ *  @brief app header component for mofron
+ *  @license MIT
  */
 const Image  = require('mofron-comp-image');
 const Header = require('mofron-comp-txtheader');
@@ -19,8 +18,8 @@ module.exports = class extends Header {
      * 
      * @param (mixed) image parameter
      *                key-value: component option
-     * @param (mixed) title parameter
-     * @param (component) navi parameter 
+     *                title parameter
+     *                navi parameter 
      * @short title,image,navi
      * @type private
      */
@@ -53,6 +52,8 @@ module.exports = class extends Header {
             
             let conts = new mofron.class.Component({ layout: new Horiz() });
             this.child([ conts, this.naviWrap() ]);
+
+	    this.styleDom(this.styleDom());
             this.childDom(conts.childDom());
         } catch (e) {
             console.error(e.stack);
@@ -128,7 +129,7 @@ module.exports = class extends Header {
      * 
      * @param (string (size)) left offset position
      * @param (string (size)) height offset position
-     * @type parameter
+     * 
      */
     imgpos (lft, hei) {
         try {
