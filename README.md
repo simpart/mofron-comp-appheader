@@ -3,8 +3,6 @@
 
 app header component for mofron
 
-title area has a link function that is specified by url parameter
-
 
 # Install
 ```
@@ -14,13 +12,11 @@ npm install mofron  mofron-comp-appheader
 # Sample
 ```html
 <require>
-    <tag load="mofron-comp-text">Text</tag>
     <tag load="mofron-comp-appheader">Header</tag>
 </require>
 
-<Header image="./logo.png" imgpos=(0.2rem,-0.05rem)>
+<Header image="./img/logo.png">
     <text>App Header</text>
-    <txtpos>(0.1rem,-0.2rem)</txtpos>
     <navi>
         <Text size=0.3rem>&equiv;</Text>
     </navi>
@@ -31,6 +27,9 @@ npm install mofron  mofron-comp-appheader
 
 | Short<br>Form | Parameter Name | Type | Description |
 |:-------------:|:---------------|:-----|:------------|
+| | text | mixed | string: header title |
+| | | | mofron-comp-text: replace title component of header |
+| | | key-value | text config |
 | ◯  | title | mixed | string: header title |
 | | | | mofron-comp-text: replace title component of header |
 | | | key-value | text config |
@@ -40,6 +39,7 @@ npm install mofron  mofron-comp-appheader
 | ◯  | navi | component | navigate component |
 | | imgpos | string (size) | left offset position |
 | | | string (size) | height offset position |
+| | | |  |
 | | url | mixed | string: jump url |
 | | | | null: not jump |
 

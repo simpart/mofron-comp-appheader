@@ -17,10 +17,10 @@ module.exports = class extends Header {
     /**
      * initialize component
      * 
-     * @param mixed: title config parameter
-     *        dict: component config list
-     * @param mixed: image config parameter
-     * @param component: navi config parameter 
+     * @param (mixed) mixed: title config parameter
+     *                dict: component config list
+     * @param (mixed) image config parameter
+     * @param (component) navi config parameter 
      * @short title,image,navi
      * @type private
      */
@@ -71,17 +71,35 @@ module.exports = class extends Header {
      * @return (mofron-comp-text) text contents
      * @type parameter
      */
-    title (txt, cnf) {
+    text (txt, cnf) {
         try {
-            let ret = this.text(txt, cnf);
+            let ret = super.text(txt, cnf);
             if (undefined !== txt) {
-                this.text().style({ "margin-left" : "0.2rem" });
+                this.text().style({ "margin-left" : "0.2rem" }, { passive: true});
 	    }
 	    return ret;
         } catch (e) {
             console.error(e.stack);
             throw e;
         }
+    }
+    
+    /**
+     * header title, same as text
+     * 
+     * @param (mixed) string: header title
+     *                mofron-comp-text: replace title component of header
+     * @param (key-value) text config
+     * @return (mofron-comp-text) text contents
+     * @type parameter
+     */
+    title (txt, cnf) {
+        try {
+            return this.text(txt,cnf);
+	} catch (e) {
+            console.error(e.stack);
+            throw e;
+	}
     }
     
     /**
@@ -105,6 +123,7 @@ module.exports = class extends Header {
                 return;
             } else if (true === comutl.isinc(prm, 'Image')) {
                 prm.config({ effect : new Synhei(this) });
+                prm.style({ "margin-left" : "0.1rem" }, { passive: true});
             }
             return this.innerComp('image', prm, Image);
         } catch (e) {
