@@ -11,15 +11,16 @@ const Synhei = require('mofron-effect-synchei');
 const Hrzpos = require('mofron-effect-hrzpos');
 const Horiz  = require('mofron-layout-horizon');
 const comutl = mofron.util.common;
+const ConfArg = mofron.class.ConfArg;
 
 module.exports = class extends Header {
     /**
      * initialize component
      * 
-     * @param (mixed) image parameter
-     *                key-value: component option
-     *                title parameter
-     *                navi parameter 
+     * @param mixed: title config parameter
+     *        dict: component config list
+     * @param mixed: image config parameter
+     * @param component: navi config parameter 
      * @short title,image,navi
      * @type private
      */
@@ -72,7 +73,11 @@ module.exports = class extends Header {
      */
     title (txt, cnf) {
         try {
-            return this.text(txt, cnf);
+            let ret = this.text(txt, cnf);
+            if (undefined !== txt) {
+                this.text().style({ "margin-left" : "0.2rem" });
+	    }
+	    return ret;
         } catch (e) {
             console.error(e.stack);
             throw e;
