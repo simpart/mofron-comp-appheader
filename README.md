@@ -11,9 +11,9 @@ npm install mofron  mofron-comp-appheader
 
 # Sample
 ```html
-<require>
+<setting>
     <tag load="mofron-comp-appheader">Header</tag>
-</require>
+</setting>
 
 <Header image="./img/logo.png">
     <text>App Header</text>

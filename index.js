@@ -27,7 +27,7 @@ module.exports = class extends Header {
     constructor (p1, p2, p3) {
         try {
             super();
-            this.name('AppHeader');
+            this.modname('AppHeader');
             this.shortForm('title', 'image', 'navi');
             
 	    if (0 < arguments.length) {
