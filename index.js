@@ -48,8 +48,9 @@ module.exports = class extends Header {
         try {
             super.initDomConts();
             this.child(this.image(), 0);
-	    this.image().event(new Link("./"));
-	    this.text().event(new Link("./"));
+
+	    this.image().event(new Link(location.href));
+	    this.text().event(new Link(location.href));
             
             let conts = new mofron.class.Component({ layout: new Horiz() });
             this.child([ conts, this.naviWrap() ]);
@@ -180,8 +181,8 @@ module.exports = class extends Header {
      */
     url (prm) {
         try {
-	    let txt_link = this.text().event({ name: "Link" });
-	    let img_link = this.image().event({ name: "Link" });
+	    let txt_link = this.text().event({ modname: "Link" });
+	    let img_link = this.image().event({ modname: "Link" });
 	    if (undefined === prm) {
                 return ("" === txt_link.url()) ? null : txt_link.url();
 	    }
