@@ -137,11 +137,15 @@ module.exports = class extends Header {
      * setter/getter navigate area
      *
      * @param (component) navigate component
+     * @param (key-value) navigate component config
      * @return (array) navigate component list
      * @type parameter
      */
-    navi (prm) {
+    navi (prm, cnf) {
         try {
+	    if (undefined !== cnf) {
+                this.naviWrap().config(cnf);
+	    }
             return this.naviWrap().child(prm);
         } catch (e) {
             console.error(e.stack);

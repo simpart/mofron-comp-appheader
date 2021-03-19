@@ -37,6 +37,7 @@ npm install mofron  mofron-comp-appheader
 | | | | mofron-comp-image: replace image component |
 | | | key-value | image config |
 | ◯  | navi | component | navigate component |
+| | | key-value | navigate component config |
 | | imgpos | string (size) | left offset position |
 | | | string (size) | height offset position |
 | | | |  |
