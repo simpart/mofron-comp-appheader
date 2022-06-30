@@ -123,7 +123,7 @@ module.exports = class extends Header {
                 this.image().config({ path : prm });
                 return;
             } else if (true === comutl.isinc(prm, 'Image')) {
-                prm.config({ effect : new Synhei(this) });
+                prm.config({ effect : new Synhei(this,'-0.1rem') });
                 prm.style({ "margin-left" : "0.1rem" }, { passive: true});
             }
             return this.innerComp('image', prm, Image);
