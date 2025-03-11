@@ -48,8 +48,15 @@ module.exports = class extends Header {
         try {
             super.initDomConts();
             this.child(this.image(), 0);
+            
+	    // image setting
+            this.image().config({
+	        effect : new Synhei(this,'-0.1rem'),
+		event:   new Link(location.href),
+		style:   new ConfArg({ "margin-left":"0.1rem" }, { passive:true }),
+		visible: false
+            });
 
-	    this.image().event(new Link(location.href));
 	    this.text().event(new Link(location.href));
             
             let conts = new mofron.class.Component({ layout: new Horiz() });
@@ -115,17 +122,15 @@ module.exports = class extends Header {
      */
     image (prm, cnf) {
         try {
-	    if (undefined !== cnf) {
-	        let add_cnf = (true === comutl.isinc(prm, 'Image')) ? prm : this.image();
-                add_cnf.config(cnf);
-	    }
             if ('string' === typeof prm) {
-                this.image().config({ path : prm });
+	        this.image().src(prm);
+		this.image().config(cnf);
+		this.image().style({ 'display':null });
                 return;
-            } else if (true === comutl.isinc(prm, 'Image')) {
-                prm.config({ effect : new Synhei(this,'-0.1rem') });
-                prm.style({ "margin-left" : "0.1rem" }, { passive: true});
-            }
+	    }
+            
+            
+            
             return this.innerComp('image', prm, Image);
         } catch (e) {
             console.error(e.stack);
