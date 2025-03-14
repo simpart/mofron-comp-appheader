@@ -52,12 +52,12 @@ module.exports = class extends Header {
 	    // image setting
             this.image().config({
 	        effect : new Synhei(this,'-0.1rem'),
-		event:   new Link(location.href),
+		event:   new Link({ suspend:true }),
 		style:   new ConfArg({ "margin-left":"0.1rem" }, { passive:true }),
 		visible: false
             });
 
-	    this.text().event(new Link(location.href));
+	    this.text().event(new Link({ suspend:true }));
             
             let conts = new mofron.class.Component({ layout: new Horiz() });
             this.child([ conts, this.naviWrap() ]);
@@ -199,8 +199,8 @@ module.exports = class extends Header {
 	        txt_link.config({ url:"", suspend: true });
 		img_link.config({ url:"", suspend: true });
 	    } else {
-                txt_link.url(prm);
-		img_link.url(prm);
+                txt_link.config({ url:prm, suspend:false });
+		img_link.config({ url:prm, suspend:false });
 	    }
 	} catch (e) {
             console.error(e.stack);
